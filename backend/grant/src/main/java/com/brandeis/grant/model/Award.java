@@ -25,6 +25,7 @@ public class Award {
     @Id
     private String awardId;
     private LocalDate startDate;
+    private int startYear;
     private int amount;
     
     @ManyToMany
