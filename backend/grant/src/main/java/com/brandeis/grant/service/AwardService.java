@@ -20,7 +20,7 @@ public class AwardService {
     }
 
     public List<Award> getAwardsWithAmountMoreThan(int minAmount) {
-        return awardRepository.findByAmountMoreThan(minAmount);
+        return awardRepository.findByAmountGreaterThan(minAmount);
     }
 
     public List<Award> getAwardsByStartYear(int startYear) {
