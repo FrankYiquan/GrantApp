@@ -8,6 +8,7 @@ public class GrantApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GrantApplication.class, args);
+		
 	}
 
 }

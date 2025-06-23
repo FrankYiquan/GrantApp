@@ -14,17 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.brandeis.grant.model.Award;
 import com.brandeis.grant.model.Faculty;
-import com.brandeis.grant.model.FacultyDocument;
 import com.brandeis.grant.repository.FacultyRepository;
-import com.brandeis.grant.repository.FacultySearchRepository;
 
 @Service
 public class FacultyService {
 
     @Autowired
     private FacultyRepository facultyRepository;
-    @Autowired
-    private FacultySearchRepository facultySearchRepository;
+   
 
     // Get all faculty members
     public List<Faculty> getAllFaculty() {
@@ -93,23 +90,8 @@ public class FacultyService {
     }
 
 
-    public void syncAllFacultiesToES() {
-        List<Faculty> facultyList = facultyRepository.findAll();
-        List<FacultyDocument> docs = facultyList.stream().map(faculty -> {
-            FacultyDocument doc = new FacultyDocument();
-            doc.setFacultyId(faculty.getFacultyId());
-            doc.setDisplayName(faculty.getDisplayName());
-            doc.setOrcid(faculty.getOrcid());
-            doc.setDisplayNameAlternatives(faculty.getDisplayNameAlternatives());
-            return doc;
-        }).toList();
-
-        facultySearchRepository.saveAll(docs);
-    }
-
-    public List<FacultyDocument> findByDisplayNameContainingIgnoreCase(String name) {
-        return facultySearchRepository.findByDisplayNameContainingIgnoreCase(name);
-    }
+   
+    
 
 
 }

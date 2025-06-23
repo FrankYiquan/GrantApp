@@ -1,18 +1,15 @@
 package com.brandeis.grant.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.brandeis.grant.model.FacultyDocument;
+import com.brandeis.grant.service.FacultySearchService;
 import com.brandeis.grant.service.FacultyService;
 
 @RestController
@@ -21,6 +18,8 @@ public class FacultyController {
 
     @Autowired
     private FacultyService facultyService;
+    @Autowired
+    private FacultySearchService facultySearchService;
 
     //upload faculty in a csv file to db
 
@@ -37,14 +36,10 @@ public class FacultyController {
     //sync faculty data in db to elasticsearch
     @PostMapping("/sync-faculty")
     public ResponseEntity<String> syncFaculty() {
-        facultyService.syncAllFacultiesToES();
+        facultySearchService.syncAllFacultiesToES();
         return ResponseEntity.ok("Faculty data synced to Elasticsearch");
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<FacultyDocument>> searchFaculty(@RequestParam("name") String name) {
-        List<FacultyDocument> result = facultyService.findByDisplayNameContainingIgnoreCase(name);
-        return ResponseEntity.ok(result); 
-    }
+    
 
 }
