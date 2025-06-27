@@ -14,7 +14,7 @@ import com.brandeis.grant.model.FacultyDocument;
 import com.brandeis.grant.repository.FacultySearchRepository;
 
 @RestController
-@RequestMapping("/api/SearchFaculty")
+@RequestMapping("/api/searchfaculty")
 public class SearchFacultyController {
 
 

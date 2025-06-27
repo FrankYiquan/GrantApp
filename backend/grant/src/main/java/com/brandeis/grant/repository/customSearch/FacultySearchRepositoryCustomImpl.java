@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.brandeis.grant.model.FacultyDocument;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.FuzzyQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import lombok.RequiredArgsConstructor;
 
@@ -22,32 +21,41 @@ public class FacultySearchRepositoryCustomImpl implements FacultySearchRepositor
 
     @Override
     public List<FacultyDocument> fuzzySearch(String name) {
-        // Build two fuzzy queries
-        FuzzyQuery fuzzyDisplayName = FuzzyQuery.of(f -> f
-            .field("displayName")
-            .value(name)
-        );
+       // Split the input name into individual words
+    String[] words = name.split("\\s+");
 
-        FuzzyQuery fuzzyAltName = FuzzyQuery.of(f -> f
-            .field("displayNameAlternatives")
-            .value(name)
-        );
+    // Create a list of fuzzy queries for each word
+    Query query = Query.of(q -> q.bool(b -> {
+        for (String word : words) {
+            // Fuzzy query for displayName field for each word
+            b.should(s -> s.fuzzy(fuzzy -> fuzzy
+                .field("displayName")
+                .value(word)  // Match each word in the field displayName
+                .fuzziness("AUTO")  // Fuzziness level (can be customized)
+            ));
 
-        // Wrap them in a bool should query (OR logic)
-        Query query = Query.of(q -> q.bool(b -> b
-            .should(q1 -> q1.fuzzy(fuzzyDisplayName))
-            .should(q2 -> q2.fuzzy(fuzzyAltName))
-        ));
+            // Fuzzy query for displayNameAlternatives field for each word
+            b.should(s -> s.fuzzy(fuzzy -> fuzzy
+                .field("displayNameAlternatives")
+                .value(word)  // Match each word in the field displayNameAlternatives
+                .fuzziness("AUTO")  // Fuzziness level (can be customized)
+            ));
+        }
+        return b;
+    }));
 
-        NativeQuery nativeQuery = NativeQuery.builder()
-            .withQuery(query)
-            .build();
+    // Build the native query with the query
+    NativeQuery searchQuery = NativeQuery.builder()
+        .withQuery(query)
+        .build();
 
-        SearchHits<FacultyDocument> searchHits = elasticsearchOperations.search(nativeQuery, FacultyDocument.class);
+    // Execute the search query
+    SearchHits<FacultyDocument> searchHits = elasticsearchOperations.search(searchQuery, FacultyDocument.class);
 
-        return searchHits.stream()
-            .map(hit -> hit.getContent())
-            .collect(Collectors.toList());
+    // Return the search results
+    return searchHits.stream()
+        .map(hit -> hit.getContent())
+        .collect(Collectors.toList());
     }
 }
 

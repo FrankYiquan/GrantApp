@@ -20,6 +20,7 @@ public class Funder {
     @Id
     private String funderId; //id (ROR id)
     private String funderName; //funder_display_name
+    
 
     @OneToMany(mappedBy = "funderId")
     private List<Award> awards;
