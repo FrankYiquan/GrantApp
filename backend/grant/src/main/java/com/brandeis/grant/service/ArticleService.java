@@ -35,5 +35,21 @@ public class ArticleService {
         return new ArrayList<>(articles);
     }
 
+    // Count articles by publication year
+    public int countArticlesByPublicationYear(int year) {
+    if (year == -1) {
+        return (int) articleRepository.count();  
+    }
+    return articleRepository.countByPublicationYear(year);
+    }
+
+    // Count articles with awards
+    public int countArticlesWithAwards(int year) {
+        if (year == -1) {
+            return (int) articleRepository.countArticlesWithAwards();
+        }
+        return (int) articleRepository.countByPublicationYear(year);
+    }
+    
     
 }

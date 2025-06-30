@@ -3,6 +3,7 @@ package com.brandeis.grant.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.brandeis.grant.model.Award;
@@ -45,6 +46,41 @@ public class AwardService {
         return award.getFunderId();
     }
 
+    // Count awards by year
+    public int getTotalAmount(int year){
+        if (year == -1) {
+            return awardRepository.sumAwardAmounts() != null ? awardRepository.sumAwardAmounts() : 0;
+        }
+        return awardRepository.sumAwardAmountsByStartYear(year) != null ? 
+               awardRepository.sumAwardAmountsByStartYear(year) : 0;
 
-    
+    }
+
+    // Find top funders by total award amount
+    public List<Object[]> getTopFundersByTotalAwardAmount(int year, int limit) {
+        if (year == -1) {
+            return awardRepository.findTopFundersByTotalAwardAmount(Pageable.ofSize(limit));
+        }
+        return awardRepository.findTopFundersByTotalAwardAmountAndYear(year, Pageable.ofSize(limit));
+    }
+
+    // Count unique funders
+    public int countUniqueFunders() {
+        Integer count = awardRepository.countUniqueFunder();
+        return count != null ? count : 0;
+    }
+
+    // Get the trend of award amounts over the years
+    public List<Object[]> getAwardAmountTrend() {
+        return awardRepository.findAwardAmountTrend();
+    }
+
+    // Count awards by funder
+    public List<Object[]> getTopFundersWithMostAwards(int limit, int year){
+        if (year == -1) {
+            return awardRepository.findTopFundersWithMostAwards(Pageable.ofSize(limit));
+        }
+        return awardRepository.findTopFundersWithMostAwardsAndByYear(year, Pageable.ofSize(limit));
+    }
+
 }

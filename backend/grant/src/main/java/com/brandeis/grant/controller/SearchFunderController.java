@@ -41,9 +41,7 @@ public class SearchFunderController {
             return ResponseEntity.badRequest().body(null);
         }
         List<FunderDocument> funders = funderSearchService.fuzzySearch(funderName);
-        if (funders.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        
         return ResponseEntity.ok(funders);
     }
     
