@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,6 +88,11 @@ public class FacultyService {
                 facultyRepository.save(faculty);
             }
         }
+    }
+
+    // Find top faculty members by total award amount
+    public List<Faculty> findTopFacultyByTotalAwardAmount(int limit) {
+        return facultyRepository.findTopFacultyByTotalAwardAmount(Pageable.ofSize(limit));
     }
 
 

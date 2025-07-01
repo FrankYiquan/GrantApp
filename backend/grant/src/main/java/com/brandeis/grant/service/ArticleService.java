@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.brandeis.grant.model.Article;
@@ -22,8 +23,11 @@ public class ArticleService {
         return article.getAwards();
     }
 
+
     public List<Article> getArticlesByPublicationYear(int year) {
+       
         return articleRepository.findByPublicationYear(year);
+
     }
 
     //search articles by keywords in title
@@ -50,6 +54,29 @@ public class ArticleService {
         }
         return (int) articleRepository.countByPublicationYear(year);
     }
-    
-    
+
+    // Get articles by faculty and year
+    public List<Article> getArticleByFacultyAndYear(int year, String facultyId) {
+        if (year == -1) {
+            return articleRepository.findArticlesByFacultyId(facultyId);
+        }
+        return articleRepository.findArticlesByFacultyIdAndByYear(facultyId, year);
+    }
+
+    // Count Number article contains funding(by Year)
+    public int countArticlesByFacultyWithAwards(String facultyId, int year) {
+        if (year == -1) {
+            return articleRepository.countArticlesByFacultyWithAwards(facultyId);
+        }
+        return articleRepository.countArticlesByFacultyWithAwardsAndByYear(facultyId, year);
+    }
+
+
+    // Get top articles by faculty aggregated by total award amount
+    public List<Object[]> getTopArticlesByFacultyAggregated(String facultyId, int limit, int year) {
+        if (year == -1) {
+            return articleRepository.findTopArticlesByFacultyAggregated(facultyId, Pageable.ofSize(limit));
+        }
+        return articleRepository.findTopArticlesByFacultyAggregatedAndByYear(facultyId, year, Pageable.ofSize(limit));
+    }
 }

@@ -75,4 +75,45 @@ public interface AwardRepository extends JpaRepository<Award, String> {
         ORDER BY COUNT(a) DESC
     """)
     List<Object[]> findTopFundersWithMostAwardsAndByYear(@Param("startYear") int startYear, Pageable pageable);
+
+
+    @Query("""
+    SELECT aw.funderId, SUM(aw.amount)
+    FROM Award aw
+    JOIN aw.faculties f
+    WHERE f.facultyId = :facultyId AND aw.funderId IS NOT NULL
+    GROUP BY aw.funderId
+    ORDER BY SUM(aw.amount) DESC
+    """)
+    List<Object[]> findTopFunderByFacultyId(@Param("facultyId") String facultyId, Pageable pageable);
+
+    @Query("""
+    SELECT aw.funderId, SUM(aw.amount)
+    FROM Award aw
+    JOIN aw.faculties f
+    WHERE f.facultyId = :facultyId AND aw.funderId IS NOT NULL AND aw.startYear = :year
+    GROUP BY aw.funderId
+    ORDER BY SUM(aw.amount) DESC
+    """)
+    List<Object[]> findTopFunderByFacultyIdAndByYear(@Param("facultyId") String facultyId, @Param("year") int year, Pageable pageable);
+
+
+    @Query("""
+    SELECT SUM(aw.amount)
+    FROM Award aw
+    JOIN aw.faculties f
+    WHERE f.facultyId = :facultyId
+    """)
+    long getTotalAwardAmountByFacultyId(@Param("facultyId")String facultyId);
+    
+    @Query("""
+    SELECT SUM(aw.amount)
+    FROM Award aw
+    JOIN aw.faculties f
+    WHERE f.facultyId = :facultyId AND aw.startYear = :year
+    """)
+    long getTotalAwardAmountByFacultyIdAndYear(@Param("facultyId")String facultyId, @Param("year") int year);
+
+
+
 }

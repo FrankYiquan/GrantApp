@@ -5,6 +5,8 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,4 +30,15 @@ public class Article {
 
     @ManyToMany(mappedBy = "articles")
     private List<Award> awards;
+
+    @ManyToMany
+    @JoinTable(
+        name = "faculty_article",
+        joinColumns = @JoinColumn(name = "article_id"),
+        inverseJoinColumns = @JoinColumn(name = "faculty_id")
+    )
+    private List<Faculty> authors;
+
+
+    
 }

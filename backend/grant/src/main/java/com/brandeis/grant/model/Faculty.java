@@ -35,4 +35,8 @@ public class Faculty {
     @Column(name = "alternative_name")
     private List<String> displayNameAlternatives; //all the alternative names for a faculty
 
+    @ManyToMany(mappedBy = "authors")
+    private List<Article> articles;
+
+
 }

@@ -83,4 +83,23 @@ public class AwardService {
         return awardRepository.findTopFundersWithMostAwardsAndByYear(year, Pageable.ofSize(limit));
     }
 
+
+    // for each faculty, get the top funders with most awards
+    public List<Object[]> getTopFundersWithMostAwardsPerFaculty(int limit, String facultyId, int year) {
+        if (year == -1) {
+            return awardRepository.findTopFunderByFacultyId(facultyId, Pageable.ofSize(limit));
+        }
+        return awardRepository.findTopFunderByFacultyIdAndByYear(facultyId, year, Pageable.ofSize(limit));
+
+    }
+
+    //get total awards by faculty
+    public long getTotalAwardsByFaculty(int year, String facultyId) {
+        if (year == -1) {
+            return awardRepository.getTotalAwardAmountByFacultyId(facultyId);
+        }
+        return awardRepository.getTotalAwardAmountByFacultyIdAndYear(facultyId, year);
+    }
+
+
 }
