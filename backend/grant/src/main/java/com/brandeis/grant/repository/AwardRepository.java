@@ -105,7 +105,7 @@ public interface AwardRepository extends JpaRepository<Award, String> {
     WHERE f.facultyId = :facultyId
     """)
     long getTotalAwardAmountByFacultyId(@Param("facultyId")String facultyId);
-    
+
     @Query("""
     SELECT SUM(aw.amount)
     FROM Award aw
@@ -114,6 +114,64 @@ public interface AwardRepository extends JpaRepository<Award, String> {
     """)
     long getTotalAwardAmountByFacultyIdAndYear(@Param("facultyId")String facultyId, @Param("year") int year);
 
+   @Query("SELECT COUNT(a) FROM Award a WHERE a.funderId.funderId = :funderId")
+    int countFunderAppearancesByFunderId(@Param("funderId")String funderId);
 
+    @Query("SELECT COUNT(a) FROM Award a WHERE a.funderId.funderId = :funderId AND a.startYear = :year")
+    int countFunderAppearancesByFunderIdAndByYear(@Param("funderId")String funderId, @Param("year")int Year);
+
+    @Query("SELECT SUM(a.amount) FROM Award a WHERE a.funderId.funderId = :funderId")
+    long getFunderTotalAmount(@Param("funderId")String funderId);
+
+    @Query("SELECT SUM(a.amount) FROM Award a WHERE a.funderId.funderId = :funderId AND a.startYear = :year")
+    long getFunderTotalAmountByYear(@Param("funderId")String funderId, @Param("year")int year);
+
+    @Query("""
+        SELECT f, SUM(a.amount) AS totalAmount
+        FROM Award a
+        JOIN a.faculties f
+        WHERE a.funderId.funderId = :funderId
+        GROUP BY f
+        ORDER BY totalAmount DESC
+    """)
+    List<Object[]> findTopFacultyWithTotalAwardAmountInFunder(
+        @Param("funderId") String funderId,
+        Pageable pageable
+    );
+
+     @Query("""
+        SELECT f, SUM(a.amount) AS totalAmount
+        FROM Award a
+        JOIN a.faculties f
+        WHERE a.funderId.funderId = :funderId AND a.startYear = :startYear
+        GROUP BY f
+        ORDER BY totalAmount DESC
+    """)
+     List<Object[]> findTopFacultyWithTotalAwardAmountInFunderByYear(
+        @Param("funderId") String funderId,
+        @Param("startYear") int startYear,
+        Pageable pageable
+    );
+
+    @Query("""
+        SELECT ar, SUM(a.amount) AS totalAmount
+        FROM Award a
+        JOIN a.articles ar
+        WHERE a.funderId.funderId = :funderId
+        GROUP BY ar
+        ORDER BY totalAmount DESC
+    """)
+    List<Object[]> findTopArticleWithMostAwardFromFunder(@Param("funderId") String funderId, Pageable pageable);
+
+
+     @Query("""
+        SELECT ar, SUM(a.amount) AS totalAmount
+        FROM Award a
+        JOIN a.articles ar
+        WHERE a.funderId.funderId = :funderId AND a.startYear = :startYear
+        GROUP BY ar
+        ORDER BY totalAmount DESC
+    """)
+    List<Object[]> findTopArticleWithMostAwardFromFunderByYear(@Param("funderId") String funderId, @Param("startYear") int startYear, Pageable pageable);
 
 }

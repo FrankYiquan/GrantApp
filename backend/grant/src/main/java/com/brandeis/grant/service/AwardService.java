@@ -102,4 +102,38 @@ public class AwardService {
     }
 
 
+    // Count funder appearances
+    public int countFunderAppeareance (String funderId, int year) {
+        if (year == -1) {
+            return awardRepository.countFunderAppearancesByFunderId(funderId);
+        }
+        return awardRepository.countFunderAppearancesByFunderIdAndByYear(funderId, year);
+    }
+
+    // Get total award amount by funder
+    public long getTotalAwardAmountByFunderId(String funderId, int year) {
+        if (year == -1) {
+            return awardRepository.getFunderTotalAmount(funderId);
+        }
+        return awardRepository.getFunderTotalAmountByYear(funderId, year);
+    }
+
+    // Get top faculty with total award amount in a specific funder
+    public List<Object[]> getTopFacultyByFunder(String funderId, int limit, int year) {
+        if (year == -1) {
+            return awardRepository.findTopFacultyWithTotalAwardAmountInFunder(funderId, Pageable.ofSize(limit));
+        }
+        return awardRepository.findTopFacultyWithTotalAwardAmountInFunderByYear(funderId, year, Pageable.ofSize(limit));
+    }
+
+    //get top article with most awards amount in a specific funder
+    public List<Object[]> getTopArticleByFunder(String funderId, int limit, int year) {
+        if (year == -1) {
+            return awardRepository.findTopArticleWithMostAwardFromFunder(funderId, Pageable.ofSize(limit));
+        }
+        return awardRepository.findTopArticleWithMostAwardFromFunderByYear(funderId, year, Pageable.ofSize(limit));
+    }
+
+
+
 }

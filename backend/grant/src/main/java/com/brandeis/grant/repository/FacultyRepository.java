@@ -20,7 +20,6 @@ public interface FacultyRepository extends JpaRepository<Faculty, String> {
 """)
 List<Faculty> findTopFacultyByTotalAwardAmount(Pageable pageable);
 
-    
 
 }
 
